@@ -1,0 +1,137 @@
+package board;
+
+import java.util.HashMap;
+import draughts.*;
+
+public class CheckBoard {
+	
+	private int dimension = 8;
+	private Man[][] squares = new Man[8][8];
+	private King[][] squaresK = new King[8][8];
+	private HashMap<String,Integer> parseH = new HashMap<String,Integer>() {/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+	{
+		put("a",0); put("b",1); put("c",2); put("d",3); put("e",4); put("f",5);
+		put("g",6); put("h",7);
+	}};
+	private HashMap<Integer,String> unparseH = new HashMap<Integer,String>() {/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+	{
+		put(0,"a"); put(1,"b"); put(2,"c"); put(3,"d"); put(4,"e"); put(5,"f");
+		put(6,"g"); put(7,"h");
+	}};
+	//private Man[][] men = new Man[8][8];
+	
+	public CheckBoard() {
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				if((i+j)%2 == 0) {
+					if(i < 3) this.squares[i][j] = new Man("w");
+					else if(i > 4) this.squares[i][j] = new Man("b");
+					else this.squares[i][j] = new Man("*");
+				}
+				//if((i+j)%2 == 0) this.squares[i][j] = new Square("*");
+				//else this.squares[i][j] = new Square(" ");
+			}
+		}
+	}
+	
+	/*
+	public void setMen() {
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				if((i+j)%2 == 0) {
+					if(i < 3) this.men[i][j] = new Man("w");
+					if(i > 4) this.men[i][j] = new Man("b");
+				} 
+			}
+		}
+	}
+	*/
+	
+	public int getDimension() {
+		return dimension;
+	}
+	
+	public String toString() {
+		String ret = "";
+		for(int i=7; i>=0; i--) {
+			for(int j=0; j<8; j++) {
+				if((i+j)%2 == 0) ret = ret + squares[i][j].toString();
+				else ret = ret + " ";
+			}
+			ret = ret + "\n";
+		}
+		return ret;
+	}
+	
+	private void move(int fromH, int fromV, int toH, int toV) {
+		Man tmp = squares[fromV][fromH];
+		squares[fromV][fromH] = squares[toV][toH];
+		squares[toV][toH] = tmp;
+	}
+	
+	public void move(String from, String to) {
+		int fromH = parseH.get(from.substring(0,1));
+		int fromV = Integer.parseInt(from.substring(1,2))-1;
+		int toH = parseH.get(to.substring(0,1));
+		int toV = Integer.parseInt(to.substring(1,2))-1;
+		move(fromH, fromV, toH, toV);
+	}
+	
+	public String[] possibleMoves(String man) {
+		int h = parseH.get(man.substring(0,1));
+		int v = Integer.parseInt(man.substring(1,2))-1;
+		java.util.List<String> ret = new java.util.ArrayList<String>();
+		
+		if(squares[v+1][h+1].toString().compareToIgnoreCase("w") == 0) {
+			
+		} else if(squares[v+1][h+1].toString().compareToIgnoreCase("*") == 0) {
+			ret.add(unparseH.get(h+1) + String.valueOf(v+2));
+		} else {
+			if(squares[v+2][h+2].toString().compareToIgnoreCase("w") == 0) {}
+			else if(squares[v+1][h+1].toString().compareToIgnoreCase("*") == 0) {
+				ret.add(unparseH.get(h+2) + String.valueOf(v+3));
+			}
+		}
+		//ret.add(unparseH.get(h+1) + String.valueOf(v+1));
+		
+		return ret.toArray(new String[0]);
+	}
+	
+	public boolean validMan(int player, String man) {
+		Man tmp = squares[parseH.get(man.substring(0,1))][Integer.parseInt(man.substring(1,2))-1];
+		if(player == 1 && (tmp.toString().compareToIgnoreCase("w") == 0)) {
+			return true;
+		} else if (player == 2 && (tmp.toString().compareToIgnoreCase("b") == 0)) {
+			return true;
+		} else return false;
+	}
+	
+	public boolean validMove(int player, String move, String[] moves) {
+		//String[] moves = possibleMoves(man);
+		boolean ret = false;
+		for(int i=0; i<moves.length; i++) {
+			if(moves[i].compareTo(move) == 0) {
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
+	
+	private void combo() {
+		
+	}
+	
+	private void comboCount() {
+		
+	}
+	
+}
